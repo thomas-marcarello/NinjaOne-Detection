@@ -42,6 +42,13 @@ function Get-NinjaAgentInstall {
         }
     }
 
+    #Checking for service and if service can be ran or is running
+    if($null -ne $(Get-Service -Name "NinjaRMMAgent" -ErrorAction SilentlyContinue)){
+        if($(Get-Service -Name "NinjaRMMAgent").Status -eq "Running"){
+            $Check3 = $true
+        }
+    }
+
     return $Check1 -and $Check2 -and $Check3
 }
 
