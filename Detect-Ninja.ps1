@@ -12,7 +12,8 @@
 Import-Module .\Company_List.psm1
 
 #Variable declaration
-$InstallLog = "$env:TEMP\ninjaone.log"
+$InstallLogPath = $env:TEMP
+$InstallLogFile = "$InstallLogPath\ninjaone.log"
 
 $NinjaURL = Get-SyncroSelection -Client "NCSC" #Remove this line and replace with switch case that this function performs.
 
@@ -20,5 +21,15 @@ Write-Host $NinjaURL
 
 #Detection function
 function Get-NinjaAgent {
-    
+    #Variable declaration
+    $check1 = $false
+    $check2 = $false
+    $check3 = $false
+
+    #Checking WMI for ninja install instance
+    if($null -ne $(Get-WmiObject -Class Win32_Product | where-object {$_.Name -like "NinjaRMMAgent"})){
+        $check1 = $true
+    }
+
+    return $check1 -and $check2 -and $check3
 }
