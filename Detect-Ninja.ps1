@@ -17,3 +17,8 @@ $InstallLog = "$env:TEMP\ninjaone.log"
 $NinjaURL = Get-SyncroSelection -Client "NCSC" #Remove this line and replace with switch case that this function performs.
 
 Write-Host $NinjaURL
+
+#Detection function
+function Get-NinjaAgent {
+    
+}
