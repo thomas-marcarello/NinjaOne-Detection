@@ -17,19 +17,32 @@ $InstallLogFile = "$InstallLogPath\ninjaone.log"
 
 $NinjaURL = Get-SyncroSelection -Client "NCSC" #Remove this line and replace with switch case that this function performs.
 
-Write-Host $NinjaURL
+#Write-Host $NinjaURL
 
 #Detection function
-function Get-NinjaAgent {
+function Get-NinjaAgentInstall {
     #Variable declaration
-    $check1 = $false
-    $check2 = $false
-    $check3 = $false
+    $Check1 = $false
+    $Check2 = $false
+    $Check3 = $false
+    $ProgramPath = "C:\Program Files (x86)\NinjaOne"
+    $Agent = "NinjaRMMAgent.exe"
+    $Target = "$Programpath\$Agent"
 
-    #Checking WMI for ninja install instance
+    #Checking WMI for ninja install instance, in a botched install instance, this may detect
     if($null -ne $(Get-WmiObject -Class Win32_Product | where-object {$_.Name -like "NinjaRMMAgent"})){
         $check1 = $true
     }
 
-    return $check1 -and $check2 -and $check3
+    #Checking for file path
+    if(Test-Path -Path $ProgramPath){
+        #Checking to make sure the RMM agent
+        If(Test-Path -Path $Target){
+            $Check2 = $true
+        }
+    }
+
+    return $Check1 -and $Check2 -and $Check3
 }
+
+Write-Host $(Get-NinjaAgentInstall)
