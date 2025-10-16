@@ -26,14 +26,16 @@ function Write-Log {
         [string]$Message
     )
     
+    $DAndT = Get-Date -UFormat "%a %m-%d-%Y | %r | %Z UTC"
+
     if($Info.IsPresent){
-        Write-Host "[INFO] $Message"
+        Write-Host "$DAndT - [INFO]     - $Message"
     }
     if($Success.IsPresent){
-        Write-Host "[SUCCESS] $Message"
+        Write-Host "$DAndT - [SUCCESS]  - $Message"
     }
     if($Fail.IsPresent){
-        Write-Host "[FAIL] $Message"
+        Write-Host "$DAndT - [FAIL]     - $Message"
     }
 }
 
@@ -90,3 +92,31 @@ function Get-NinjaAgentInstall {
     return ($Check1 -or $Check2) -and $Check3
 }
 
+function Install-NinjaOneAgent {
+    param (
+        [string]$NinjaURL,
+        [string]$InstallLog
+    )
+    Start-Process msiexec.exe -ArgumentList "/i $NinjaURL /quiet /L*V $InstallLog" -Wait
+}
+
+function Remove-NinjaOneAgent {
+    param (
+        
+    )
+    
+}
+
+Write-Log -Info -Message "Override status: $Override"
+
+#Check for Ninja agent previously installed
+Write-Log -Info -Message "Checking for preexisting Ninja agent."
+$NinjaInstalled = Get-NinjaAgentInstall
+If($NinjaInstalled){
+    Write-Log -Success -Message "NinjaRMMAgent found and working."
+    If(!$Override){
+        exit 0
+    }
+}
+
+Write-Log -Fail -Message "NinjaRMMAgent not found or broken."
